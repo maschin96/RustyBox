@@ -5,6 +5,45 @@ BusyBox tree. The migration is incremental: the existing C build, Kconfig,
 Kbuild, applet metadata generation, and testsuite remain authoritative until a
 specific area is explicitly migrated.
 
+This repository is also a study of how AI coding agents can help with a
+careful reimplementation or language transition from C to Rust. Agent-assisted
+changes are expected to be small, reviewable, and evidence-backed. The
+interesting outcome is not only whether an applet can be rewritten in Rust, but
+whether the process can preserve BusyBox behavior, size discipline, portability,
+and maintainability while leaving a clear audit trail for human reviewers.
+
+## Migration goals
+
+- Keep the existing C implementation as the behavioral reference until a Rust
+  implementation has been explicitly accepted.
+- Use Rust first where the risk is low and the expected safety or
+  maintainability benefit is easy to reason about.
+- Make each migration reversible by keeping the C implementation available and
+  selecting the Rust path only through configuration.
+- Record enough context for reviewers to understand what was changed, how the
+  agent arrived there, and which verification was performed.
+- Avoid broad rewrites, dependency growth, or runtime behavior changes that are
+  not required for the applet being migrated.
+
+## Agent-assisted workflow
+
+AI agents may be used to propose, implement, document, or test migration steps,
+but the repository should remain understandable without relying on hidden agent
+state. Each agent-assisted migration should leave durable project artifacts:
+
+- A focused code change that maps to one applet or one supporting
+  infrastructure concern.
+- Documentation updates when migration rules, scope, assumptions, or known
+  limitations change.
+- Test or comparison evidence showing the Rust behavior against the C baseline.
+- A short rationale in the commit or pull request explaining why the applet was
+  chosen and what was intentionally left unchanged.
+
+Agent output is not a substitute for review. Reviewers should treat generated
+code like any other contribution and check ABI boundaries, error handling,
+platform assumptions, size impact, licensing, and conformance with BusyBox
+style.
+
 ## Toolchain policy
 
 - The initial Rust toolchain is pinned in `rust-toolchain.toml`.
@@ -24,6 +63,10 @@ specific area is explicitly migrated.
   builds until Kbuild integration is intentionally added.
 - Rust applets are currently opt-in through `FEATURE_RUST_APPLETS`. Default
   configurations continue to use the C implementations.
+
+The workspace should stay small and purpose-built. It exists to support
+BusyBox applet migration experiments, not to become a separate replacement
+project with independent behavior or command-line semantics.
 
 ## Applet ABI
 
@@ -93,3 +136,19 @@ behavior for:
 
 The existing testsuite remains the acceptance baseline. New comparison tooling
 should be added before migrating applets with meaningful I/O behavior.
+
+For agent-assisted work, verification notes should be written so another
+reviewer can repeat the important checks without reconstructing the agent's
+private context. At minimum, record the configuration used, the commands run,
+the observed result, and any known gaps.
+
+## Documentation expectations
+
+Documentation is part of the migration surface. When a Rust migration changes
+policy, scope, build behavior, testing practice, or applet status, update this
+file in the same change. When a user-facing behavior changes, update the normal
+BusyBox documentation or usage text instead of documenting the difference only
+as a Rust migration detail.
+
+Keep the documentation in Markdown where possible so it remains easy to review
+in code review tools and usable by both human contributors and AI agents.

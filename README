@@ -14,6 +14,26 @@ BusyBox is distributed under GPLv2 only.  See `LICENSE` for the full license
 text.
 
 
+## Project Context
+
+This repository is also used as an engineering study of how AI coding agents
+can support a code reimplementation or language migration from C to Rust.  The
+goal is not to replace the proven C codebase in one large rewrite.  Instead,
+the Rust work is intentionally incremental, measurable, and reversible:
+
+- Preserve the existing C build, Kconfig, Kbuild, applet metadata, and
+  testsuite as the baseline.
+- Introduce Rust applets only behind explicit opt-in configuration.
+- Compare Rust behavior against the existing C implementations before treating
+  a migration as acceptable.
+- Keep documentation, design notes, and verification evidence close to the
+  code so human reviewers can audit both the technical change and the agent
+  workflow that produced it.
+
+See [`docs/rust-migration.md`](docs/rust-migration.md) for the current Rust
+migration rules, scope, and verification expectations.
+
+
 ## Quick Start
 
 The build system follows the same general pattern as the Linux kernel:
@@ -132,6 +152,7 @@ See `docs/unit-tests.txt` for details on writing and running unit tests.
   directories - applet implementations grouped by domain.
 - `include/` - shared headers.
 - `libbb/` - shared BusyBox support library.
+- `rust/` - experimental Rust workspace for opt-in applet migrations.
 - `scripts/` - build, configuration, and maintenance helpers.
 - `testsuite/` - functional tests.
 - `docs/` - project documentation, style notes, applet guidance, and topic
