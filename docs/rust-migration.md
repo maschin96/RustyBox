@@ -5,6 +5,9 @@ BusyBox tree. The migration is incremental: the existing C build, Kconfig,
 Kbuild, applet metadata generation, and testsuite remain authoritative until a
 specific area is explicitly migrated.
 
+The current issue order, dependency map, milestones, and first applet wave are
+tracked in [rust-migration-tracking.md](rust-migration-tracking.md).
+
 This repository is also a study of how AI coding agents can help with a
 careful reimplementation or language transition from C to Rust. Agent-assisted
 changes are expected to be small, reviewable, and evidence-backed. The
