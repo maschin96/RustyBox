@@ -13,7 +13,8 @@
 //config:	whoami is used to print the username of the current
 //config:	user id (same as id -un).
 
-//applet:IF_WHOAMI(APPLET_NOFORK(whoami, whoami, BB_DIR_USR_BIN, BB_SUID_DROP, whoami))
+//applet:IF_WHOAMI(IF_FEATURE_RUST_APPLETS(APPLET(whoami, BB_DIR_USR_BIN, BB_SUID_DROP)))
+//applet:IF_WHOAMI(IF_NOT_FEATURE_RUST_APPLETS(APPLET_NOFORK(whoami, whoami, BB_DIR_USR_BIN, BB_SUID_DROP, whoami)))
 
 //kbuild:lib-$(CONFIG_WHOAMI) += whoami.o
 
@@ -27,6 +28,13 @@
 #include "libbb.h"
 
 int whoami_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+#if ENABLE_FEATURE_RUST_APPLETS
+int rust_whoami_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+int whoami_main(int argc, char **argv)
+{
+	return rust_whoami_main(argc, argv);
+}
+#else
 int whoami_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 {
 	if (argv[1])
@@ -37,3 +45,4 @@ int whoami_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 
 	return fflush_all();
 }
+#endif

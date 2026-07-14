@@ -17,7 +17,8 @@
 //config:	yes is used to repeatedly output a specific string, or
 //config:	the default string 'y'.
 
-//applet:IF_YES(APPLET_NOEXEC(yes, yes, BB_DIR_USR_BIN, BB_SUID_DROP, yes))
+//applet:IF_YES(IF_FEATURE_RUST_APPLETS(APPLET(yes, BB_DIR_USR_BIN, BB_SUID_DROP)))
+//applet:IF_YES(IF_NOT_FEATURE_RUST_APPLETS(APPLET_NOEXEC(yes, yes, BB_DIR_USR_BIN, BB_SUID_DROP, yes)))
 /* was NOFORK, but then yes can't be ^C'ed if run by hush */
 
 //kbuild:lib-$(CONFIG_YES) += yes.o
@@ -32,6 +33,13 @@
 #include "libbb.h"
 
 int yes_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+#if ENABLE_FEATURE_RUST_APPLETS
+int rust_yes_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+int yes_main(int argc, char **argv)
+{
+	return rust_yes_main(argc, argv);
+}
+#else
 int yes_main(int argc UNUSED_PARAM, char **argv)
 {
 	char **pp;
@@ -52,3 +60,4 @@ int yes_main(int argc UNUSED_PARAM, char **argv)
 
 	bb_perror_nomsg_and_die();
 }
+#endif

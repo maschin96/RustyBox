@@ -13,7 +13,8 @@
 //config:	hostid prints the numeric identifier (in hexadecimal) for
 //config:	the current host.
 
-//applet:IF_HOSTID(APPLET_NOFORK(hostid, hostid, BB_DIR_USR_BIN, BB_SUID_DROP, hostid))
+//applet:IF_HOSTID(IF_FEATURE_RUST_APPLETS(APPLET(hostid, BB_DIR_USR_BIN, BB_SUID_DROP)))
+//applet:IF_HOSTID(IF_NOT_FEATURE_RUST_APPLETS(APPLET_NOFORK(hostid, hostid, BB_DIR_USR_BIN, BB_SUID_DROP, hostid)))
 
 //kbuild:lib-$(CONFIG_HOSTID) += hostid.o
 
@@ -29,6 +30,13 @@
 /* This is a NOFORK applet. Be very careful! */
 
 int hostid_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+#if ENABLE_FEATURE_RUST_APPLETS
+int rust_hostid_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+int hostid_main(int argc, char **argv)
+{
+	return rust_hostid_main(argc, argv);
+}
+#else
 int hostid_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 {
 	if (argv[1]) {
@@ -40,3 +48,4 @@ int hostid_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 
 	return fflush_all();
 }
+#endif

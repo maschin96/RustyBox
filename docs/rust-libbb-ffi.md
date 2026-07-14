@@ -21,6 +21,8 @@ implementations live in `libbb/rust_ffi.c`, and safe Rust wrappers live in
 | `full_write` | `bb_rust_full_write` | `full_write` | Retries interrupted writes and reports failed or partial output. |
 | `InputFd` drop | `bb_rust_close` | `close` | Closes named inputs exactly once and leaves borrowed stdin open. |
 | `current_dir` | `bb_rust_getcwd_or_warn` | `xrealloc_getcwd_or_warn` | Returns an allocated physical current directory or a diagnosed failure. |
+| `current_username` | `bb_rust_current_username` | `xuid2uname` + `xstrdup` | Returns an owned copy of the effective user's name. |
+| `hostid` | `bb_rust_hostid` | `gethostid` | Returns the platform host identifier as 32 bits. |
 | `concat_path_file` | `bb_rust_concat_path_file` | `concat_path_file` | Joins paths with existing BusyBox semantics. |
 | `LibbbString` drop | `bb_rust_free` | `free` | Returns C allocations to the C allocator. |
 

@@ -140,6 +140,8 @@ Current status:
 - `cat` has an opt-in Rust implementation for plain concatenation mode.
   Configurations enabling `FEATURE_CATN` or `FEATURE_CATV` retain the C path,
   keeping this Rust slice focused on stdin, files, descriptors, and errors.
+- `yes`, `whoami`, and `hostid` have opt-in Rust implementations. They remain
+  normal applets on the Rust path until the NOFORK/NOEXEC review is repeated.
 
 ## Verification expectations
 

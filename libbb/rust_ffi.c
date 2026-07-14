@@ -44,6 +44,16 @@ char *bb_rust_getcwd_or_warn(void)
 	return xrealloc_getcwd_or_warn(NULL);
 }
 
+char *bb_rust_current_username(void)
+{
+	return xstrdup(xuid2uname(geteuid()));
+}
+
+uint32_t bb_rust_hostid(void)
+{
+	return (uint32_t)gethostid();
+}
+
 char *bb_rust_concat_path_file(const char *path, const char *filename)
 {
 	return concat_path_file(path, filename);

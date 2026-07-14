@@ -20,8 +20,11 @@ APPLETS = {
     "cat": "CAT",
     "dirname": "DIRNAME",
     "false": "FALSE",
+    "hostid": "HOSTID",
     "pwd": "PWD",
     "true": "TRUE",
+    "whoami": "WHOAMI",
+    "yes": "YES",
 }
 COPY_EXCLUDED_DIRS = {
     ".git",
@@ -197,6 +200,19 @@ def applet_cases(applets: list[str]) -> list[Case]:
                     Case(applet=applet, name="broken-pipe", args=("large",), broken_pipe=True),
                     Case(applet=applet, name="symlink", args=("one",), symlink=True),
                 ]
+            )
+        elif applet in {"hostid", "whoami"}:
+            cases.append(Case(applet=applet, name="direct"))
+            cases.append(Case(applet=applet, name="symlink", symlink=True))
+        elif applet == "yes":
+            cases.append(Case(applet=applet, name="default-broken-pipe", broken_pipe=True))
+            cases.append(
+                Case(
+                    applet=applet,
+                    name="words-broken-pipe",
+                    args=("hello", "world"),
+                    broken_pipe=True,
+                )
             )
     return cases
 

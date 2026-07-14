@@ -44,6 +44,64 @@ pub unsafe extern "C" fn rust_cat_main(argc: c_int, argv: *mut *mut c_char) -> c
     unsafe { run_applet(argc, argv, cat_main) }
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn rust_yes_main(argc: c_int, argv: *mut *mut c_char) -> c_int {
+    // SAFETY: BusyBox calls applet entry points with its normal argc/argv ABI.
+    unsafe { run_applet(argc, argv, yes_main) }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rust_whoami_main(argc: c_int, argv: *mut *mut c_char) -> c_int {
+    // SAFETY: BusyBox calls applet entry points with its normal argc/argv ABI.
+    unsafe { run_applet(argc, argv, whoami_main) }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rust_hostid_main(argc: c_int, argv: *mut *mut c_char) -> c_int {
+    // SAFETY: BusyBox calls applet entry points with its normal argc/argv ABI.
+    unsafe { run_applet(argc, argv, hostid_main) }
+}
+
+fn yes_main(argv: RawArgv) -> c_int {
+    let Some(args) = argv_bytes(argv) else {
+        return usage_error();
+    };
+    let words = if args.len() > 1 { &args[1..] } else { &[] };
+    let line = if words.is_empty() {
+        b"y\n".to_vec()
+    } else {
+        let mut line = words.iter().fold(Vec::new(), |mut output, word| {
+            if !output.is_empty() {
+                output.push(b' ');
+            }
+            output.extend_from_slice(word);
+            output
+        });
+        line.push(b'\n');
+        line
+    };
+    loop {
+        if libbb::full_write(1, &line).is_err() {
+            return EXIT_FAILURE;
+        }
+    }
+}
+
+fn whoami_main(argv: RawArgv) -> c_int {
+    if argv.argc() != 1 {
+        return usage_error();
+    }
+    let username = libbb::current_username();
+    write_line(username.as_bytes())
+}
+
+fn hostid_main(argv: RawArgv) -> c_int {
+    if argv.argc() != 1 {
+        return usage_error();
+    }
+    write_line(format!("{:08x}", libbb::hostid()).as_bytes())
+}
+
 fn cat_main(argv: RawArgv) -> c_int {
     let Some(args) = argv_bytes(argv) else {
         return usage_error();

@@ -20,6 +20,8 @@ mod raw {
         pub fn bb_rust_full_write(fd: c_int, buffer: *const c_void, length: usize) -> isize;
         pub fn bb_rust_close(fd: c_int) -> c_int;
         pub fn bb_rust_getcwd_or_warn() -> *mut c_char;
+        pub fn bb_rust_current_username() -> *mut c_char;
+        pub fn bb_rust_hostid() -> u32;
         pub fn bb_rust_concat_path_file(
             path: *const c_char,
             filename: *const c_char,
@@ -168,6 +170,19 @@ pub fn current_dir() -> Option<LibbbString> {
     LibbbString::from_raw(unsafe { raw::bb_rust_getcwd_or_warn() })
 }
 
+/// Return an owned copy of the effective user's BusyBox-resolved name.
+pub fn current_username() -> LibbbString {
+    // SAFETY: The bridge returns an owned xstrdup allocation or terminates.
+    LibbbString::from_raw(unsafe { raw::bb_rust_current_username() })
+        .expect("libbb current username returned null")
+}
+
+/// Return the platform's 32-bit host identifier.
+pub fn hostid() -> u32 {
+    // SAFETY: The bridge takes no arguments and has no ownership transfer.
+    unsafe { raw::bb_rust_hostid() }
+}
+
 /// Join a path and filename with BusyBox path semantics.
 ///
 /// A `None` path has the same meaning as an empty path in libbb. Allocation
@@ -292,6 +307,16 @@ mod tests {
         drop(unsafe { CString::from_raw(pointer.cast::<c_char>()) });
     }
 
+    #[export_name = "bb_rust_current_username"]
+    extern "C" fn mock_current_username() -> *mut c_char {
+        CString::new("tester").unwrap().into_raw()
+    }
+
+    #[export_name = "bb_rust_hostid"]
+    extern "C" fn mock_hostid() -> u32 {
+        0x1234_abcd
+    }
+
     #[test]
     fn messages_use_fixed_c_string_interface() {
         let _guard = lock();
@@ -353,5 +378,14 @@ mod tests {
         assert!(current_dir().is_none());
         assert_eq!(FREE_COUNT.load(Ordering::SeqCst), 2);
         GETCWD_FAIL.store(false, Ordering::SeqCst);
+    }
+
+    #[test]
+    fn identity_helpers_return_owned_name_and_hostid() {
+        let _guard = lock();
+        let before = FREE_COUNT.load(Ordering::SeqCst);
+        assert_eq!(current_username().as_bytes(), b"tester");
+        assert_eq!(FREE_COUNT.load(Ordering::SeqCst), before + 1);
+        assert_eq!(hostid(), 0x1234_abcd);
     }
 }
