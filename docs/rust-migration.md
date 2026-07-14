@@ -12,6 +12,8 @@ recorded in [c-only-baseline.md](c-only-baseline.md).
 The Rust archive build, host/target separation, out-of-tree behavior, and
 cross-target interface are specified in
 [rust-kbuild-integration.md](rust-kbuild-integration.md).
+Validated and candidate target triples are recorded in
+[rust-cross-compile.md](rust-cross-compile.md).
 
 This repository is also a study of how AI coding agents can help with a
 careful reimplementation or language transition from C to Rust. Agent-assisted

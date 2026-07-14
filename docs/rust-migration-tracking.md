@@ -65,7 +65,7 @@ Required issues:
 
 - [#4 Baseline fuer Build, Tests und Binary-Groesse erfassen](https://github.com/maschin96/busybox/issues/4) - closed by `docs/c-only-baseline.md`.
 - [#8 Kbuild-Integration fuer Rust-Static-Library planen](https://github.com/maschin96/busybox/issues/8) - complete; design recorded in `docs/rust-kbuild-integration.md`.
-- [#17 Cross-Compile-Support fuer Rust validieren](https://github.com/maschin96/busybox/issues/17) - open.
+- [#17 Cross-Compile-Support fuer Rust validieren](https://github.com/maschin96/busybox/issues/17) - complete; matrix in `docs/rust-cross-compile.md`.
 
 Exit state: open.
 
@@ -101,7 +101,7 @@ Exit state: open.
 | [#14 stdout applets](https://github.com/maschin96/busybox/issues/14) | complete | M1 | #15, #22 | broader simple-output evidence |
 | [#15 C-vs-Rust comparison harness](https://github.com/maschin96/busybox/issues/15) | closed | M1 | #11, #13 | #9, #10, #12, #14 |
 | [#16 NOFORK/NOEXEC rules](https://github.com/maschin96/busybox/issues/16) | closed | M0 | #5, #7 | applet registration decisions |
-| [#17 Cross-compile validation](https://github.com/maschin96/busybox/issues/17) | open | M2 | #6, #8, #4 recommended | target support matrix |
+| [#17 Cross-compile validation](https://github.com/maschin96/busybox/issues/17) | complete | M2 | #6, #8, #4 | target support matrix |
 | [#18 libbb-like Rust utility candidates](https://github.com/maschin96/busybox/issues/18) | open | M3 | #9, #12, #14 evidence recommended | #20, future utility ports |
 | [#19 High-risk exclusions](https://github.com/maschin96/busybox/issues/19) | closed | M0 | none | scope control |
 | [#20 Second applet wave](https://github.com/maschin96/busybox/issues/20) | open | M3 | #4, #9, #10, #12, #14, #18 | next migration batch |
@@ -110,9 +110,7 @@ Exit state: open.
 
 ## Current next actions
 
-1. Complete [#17](https://github.com/maschin96/busybox/issues/17) to validate
-   explicit glibc and musl Rust targets for the Kbuild design.
-2. Use the baseline from [#4](https://github.com/maschin96/busybox/issues/4),
+1. Use the baseline from [#4](https://github.com/maschin96/busybox/issues/4),
    [#18](https://github.com/maschin96/busybox/issues/18), and
    [#20](https://github.com/maschin96/busybox/issues/20) to decide the second
    wave from measured behavior, size deltas, and risk.

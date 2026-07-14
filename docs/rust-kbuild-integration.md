@@ -45,8 +45,8 @@ make ARCH=<busybox-arch> CROSS_COMPILE=<tool-prefix> \
   RUST_TARGET_LINKER=<target-linker>
 ```
 
-Before this interface is enabled, issue #17 owns the supported glibc/musl
-matrix. A mapping is accepted only after the C compiler target, Rust target,
+The current candidates and validation evidence are recorded in
+`rust-cross-compile.md`. A mapping is accepted only after the C compiler target, Rust target,
 libc ABI, pointer width, endianness, and final linker have been checked as one
 toolchain. Unknown combinations must fail with a clear message instead of
 silently producing a host archive.

@@ -575,7 +575,13 @@ libs-y		:= $(libs-y1) $(libs-y2)
 rust-libs-y :=
 ifeq ($(CONFIG_FEATURE_RUST_APPLETS),y)
 rust-target-dir := $(objtree)/rust/target
-rust-libs-y += $(rust-target-dir)/release/libbusybox_rs.a
+rust-target-subdir := $(if $(RUST_TARGET),$(RUST_TARGET)/,)
+rust-libs-y += $(rust-target-dir)/$(rust-target-subdir)release/libbusybox_rs.a
+ifneq ($(CROSS_COMPILE),)
+ifeq ($(RUST_TARGET),)
+$(error Rust cross builds require an explicit RUST_TARGET triple)
+endif
+endif
 endif
 
 # Build busybox
@@ -740,8 +746,10 @@ endif
 $(sort $(filter-out $(rust-libs-y),$(busybox-all))): $(busybox-dirs) ;
 
 $(rust-libs-y): FORCE
-	$(Q)CARGO_TARGET_DIR=$(rust-target-dir) cargo build \
-		--manifest-path $(srctree)/rust/Cargo.toml --release
+	$(Q)CARGO_TARGET_DIR=$(rust-target-dir) \
+		$(if $(RUST_TARGET_LINKER),RUSTFLAGS="$(RUSTFLAGS) -C linker=$(RUST_TARGET_LINKER)") \
+		cargo build --manifest-path $(srctree)/rust/Cargo.toml --release \
+		$(if $(RUST_TARGET),--target $(RUST_TARGET))
 
 # Handle descending into subdirectories listed in $(busybox-dirs)
 # Preset locale variables to speed up the build process. Limit locale
