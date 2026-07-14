@@ -4,7 +4,7 @@ This document is the durable tracking artifact for the BusyBox Rust migration.
 It records the current order, dependencies, issue status, milestones, and first
 applet wave so the GitHub issue list is not the only source of migration state.
 
-Status snapshot: 2026-07-13.
+Status snapshot: 2026-07-14.
 
 ## Goals
 
@@ -53,7 +53,7 @@ Supporting first-wave issues:
 
 - [#15 Vergleichstest-Harness fuer C-vs-Rust-Applets bauen](https://github.com/maschin96/busybox/issues/15) - closed.
 - [#10 Binary-Size-Reporting fuer Rust-Applets einfuehren](https://github.com/maschin96/busybox/issues/10) - closed.
-- [#22 libbb-FFI-Bruecke fuer Rust-Applets definieren](https://github.com/maschin96/busybox/issues/22) - open.
+- [#22 libbb-FFI-Bruecke fuer Rust-Applets definieren](https://github.com/maschin96/busybox/issues/22) - closed.
 
 Exit state: partially complete. The first wave is defined, but `cat`,
 `yes`, `whoami`, `hostid`, and the first libbb FFI wrapper surface remain open.
@@ -65,7 +65,7 @@ Purpose: make the Rust path reproducible beyond the current native CI flow.
 Required issues:
 
 - [#4 Baseline fuer Build, Tests und Binary-Groesse erfassen](https://github.com/maschin96/busybox/issues/4) - closed by `docs/c-only-baseline.md`.
-- [#8 Kbuild-Integration fuer Rust-Static-Library planen](https://github.com/maschin96/busybox/issues/8) - open.
+- [#8 Kbuild-Integration fuer Rust-Static-Library planen](https://github.com/maschin96/busybox/issues/8) - complete; design recorded in `docs/rust-kbuild-integration.md`.
 - [#17 Cross-Compile-Support fuer Rust validieren](https://github.com/maschin96/busybox/issues/17) - open.
 
 Exit state: open.
@@ -93,7 +93,7 @@ Exit state: open.
 | [#5 FFI and libc safety rules](https://github.com/maschin96/busybox/issues/5) | closed | M0 | #2 | #7, #22 |
 | [#6 Toolchain policy](https://github.com/maschin96/busybox/issues/6) | closed | M0 | #2 | CI, #17 |
 | [#7 C ABI convention](https://github.com/maschin96/busybox/issues/7) | closed | M0 | #2, #5 | #11, #13, applet ports |
-| [#8 Kbuild integration plan](https://github.com/maschin96/busybox/issues/8) | open | M2 | #1, #2, #6, #7 | stronger native build integration |
+| [#8 Kbuild integration plan](https://github.com/maschin96/busybox/issues/8) | complete | M2 | #1, #2, #6, #7 | stronger native build integration |
 | [#9 Path applets](https://github.com/maschin96/busybox/issues/9) | closed | M1 | #7, #15 | path behavior evidence, #20 |
 | [#10 Size reporting](https://github.com/maschin96/busybox/issues/10) | closed | M1 | #15 | #4, #20 |
 | [#11 `true`](https://github.com/maschin96/busybox/issues/11) | closed | M1 | #7 | #13, CI smoke baseline |
@@ -107,17 +107,17 @@ Exit state: open.
 | [#19 High-risk exclusions](https://github.com/maschin96/busybox/issues/19) | closed | M0 | none | scope control |
 | [#20 Second applet wave](https://github.com/maschin96/busybox/issues/20) | open | M3 | #4, #9, #10, #12, #14, #18 | next migration batch |
 | [#21 Dependency policy](https://github.com/maschin96/busybox/issues/21) | closed | M0 | #6 | future crate review |
-| [#22 libbb FFI bridge](https://github.com/maschin96/busybox/issues/22) | open | M1 | #5, #7 | #12, #14, future applets |
+| [#22 libbb FFI bridge](https://github.com/maschin96/busybox/issues/22) | closed | M1 | #5, #7 | #12, #14, future applets |
 
 ## Current next actions
 
-1. Complete [#22](https://github.com/maschin96/busybox/issues/22) before
-   migrating applets that need libbb-compatible error, path, or FD helpers.
-2. Complete [#12](https://github.com/maschin96/busybox/issues/12) to validate
+1. Complete [#12](https://github.com/maschin96/busybox/issues/12) to validate
    the first file-reading applet, including stdin, multiple files, errors, and
    broken-pipe behavior.
-3. Complete [#14](https://github.com/maschin96/busybox/issues/14) to broaden
+2. Complete [#14](https://github.com/maschin96/busybox/issues/14) to broaden
    simple stdout behavior beyond `true`, `false`, and path-only applets.
+3. Complete [#17](https://github.com/maschin96/busybox/issues/17) to validate
+   explicit glibc and musl Rust targets for the Kbuild design.
 4. Use the baseline from [#4](https://github.com/maschin96/busybox/issues/4),
    [#18](https://github.com/maschin96/busybox/issues/18), and
    [#20](https://github.com/maschin96/busybox/issues/20) to decide the second

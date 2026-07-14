@@ -975,7 +975,7 @@ endif # CONFIG_MODULES
 # make distclean Remove editor backup files, patch leftover files and the like
 
 # Directories & files removed with 'make clean'
-CLEAN_DIRS  += $(MODVERDIR) _install 0_lib
+CLEAN_DIRS  += $(MODVERDIR) _install 0_lib rust/target
 CLEAN_FILES +=	busybox busybox_unstripped* busybox.links \
 		busybox*.suid busybox*.nosuid \
                 System.map .kernelrelease \
