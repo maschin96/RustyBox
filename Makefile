@@ -6,7 +6,7 @@ NAME = Unnamed
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
-# More info can be located in ./README
+# More info can be located in ./README.md
 # Comments in this file are targeted only to the developer, do not
 # expect to learn how to build the kernel reading this file.
 
