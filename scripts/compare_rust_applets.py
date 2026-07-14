@@ -217,7 +217,7 @@ def applet_cases(applets: list[str]) -> list[Case]:
     return cases
 
 
-def run_case(binary: Path, case: Case, link_dir: Path) -> Result:
+def run_case(binary: Path, case: Case, link_dir: Path, cwd: Path) -> Result:
     env = os.environ.copy()
     env["LC_ALL"] = "C"
 
@@ -234,7 +234,7 @@ def run_case(binary: Path, case: Case, link_dir: Path) -> Result:
         read_fd, write_fd = os.pipe()
         process = subprocess.Popen(
             argv,
-            cwd=link_dir,
+            cwd=cwd,
             env=env,
             stdin=subprocess.PIPE if case.stdin is not None else subprocess.DEVNULL,
             stdout=write_fd,
@@ -246,7 +246,7 @@ def run_case(binary: Path, case: Case, link_dir: Path) -> Result:
         return Result(process.returncode, b"", stderr)
 
     completed = subprocess.run(
-        argv, cwd=link_dir, env=env, input=case.stdin, capture_output=True, check=False
+        argv, cwd=cwd, env=env, input=case.stdin, capture_output=True, check=False
     )
     return Result(completed.returncode, completed.stdout, completed.stderr)
 
@@ -265,8 +265,8 @@ def text_diff(label: str, c_bytes: bytes, rust_bytes: bytes) -> list[str]:
 
 
 def compare_case(c_binary: Path, rust_binary: Path, case: Case, tmp_dir: Path) -> list[str]:
-    c_result = run_case(c_binary, case, tmp_dir / "c-links")
-    rust_result = run_case(rust_binary, case, tmp_dir / "rust-links")
+    c_result = run_case(c_binary, case, tmp_dir / "c-links", tmp_dir)
+    rust_result = run_case(rust_binary, case, tmp_dir / "rust-links", tmp_dir)
 
     failures: list[str] = []
     if c_result.returncode != rust_result.returncode:
@@ -325,10 +325,9 @@ def main(argv: list[str]) -> int:
     shutil.rmtree(tmp_dir, ignore_errors=True)
     (tmp_dir / "c-links").mkdir(parents=True)
     (tmp_dir / "rust-links").mkdir(parents=True)
-    for directory in (tmp_dir / "c-links", tmp_dir / "rust-links"):
-        (directory / "one").write_bytes(b"first\n")
-        (directory / "two").write_bytes(b"second\n")
-        (directory / "large").write_bytes(b"x" * (1024 * 1024))
+    (tmp_dir / "one").write_bytes(b"first\n")
+    (tmp_dir / "two").write_bytes(b"second\n")
+    (tmp_dir / "large").write_bytes(b"x" * (1024 * 1024))
 
     failures = 0
     for case in applet_cases(applets):
